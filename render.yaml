@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: secure-pos-postgres
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: secure-pos-db
+          property: connectionString
+      - key: POS_SECRET_KEY
+        generateValue: true
+      - key: INITIAL_SUPERADMIN_USERNAME
+        value: superadmin
+      - key: INITIAL_SUPERADMIN_PASSWORD
+        sync: false
+      - key: FLASK_ENV
+        value: production
+
+databases:
+  - name: secure-pos-db
+    plan: basic-256mb
